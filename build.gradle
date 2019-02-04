@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+}
+
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useTestNG()
+
+    // Using the G1 garbage collector changes the semantics to trigger this bug.
+    jvmArgs '-XX:+UseG1GC'
+
+    // Force test to always re-run
+    outputs.upToDateWhen { false }
+}
+
+dependencies {
+    testCompile 'joda-time:joda-time:2.9.9'
+    testCompile "org.testng:testng:6.11"
+
+    // Latest released version. Fails sometimes, works sometimes.
+    testCompile 'de.ruedigermoeller:fst:2.57'
+
+    // Latest version "claimed" to be concurrency-safe, but fails in the same way. (sometimes works, sometimes fails)
+    //testCompile 'de.ruedigermoeller:fst:2.10'
+
+    // Old version, fails in the same way.
+    //testCompile 'de.ruedigermoeller:fst:2.00'
+
+    // Ancient versions, our test does not compile with these.
+    //testCompile 'de.ruedigermoeller:fst:1.63'
+    //testCompile 'de.ruedigermoeller:fst:1.27'
+}
