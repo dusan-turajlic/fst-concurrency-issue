@@ -21,6 +21,8 @@ import org.testng.annotations.Test;
 // Test case, based on examples by @TheHound and @andrewl102
 public class FSTSerializationTest {
 
+    private final static int NUMBER_OF_THREADS = 16;
+
     private final FSTConfiguration fstConf = FSTConfiguration.createDefaultConfiguration();
 
     public static void main(String[] args) throws InterruptedException, ClassNotFoundException {
@@ -30,7 +32,7 @@ public class FSTSerializationTest {
     @Test
     public void tryAndReProduceBug() throws InterruptedException, ClassNotFoundException {
         final Serializable testObject = new TestObject();
-        ExecutorService pool = Executors.newFixedThreadPool( 16 );
+        ExecutorService pool = Executors.newFixedThreadPool( NUMBER_OF_THREADS );
 
         // Pre-register classes to work around https://github.com/RuedigerMoeller/fast-serialization/issues/235
         fstConf.registerClass( DateTime.class );
