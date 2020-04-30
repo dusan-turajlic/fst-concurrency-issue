@@ -1,39 +1,21 @@
 plugins {
-    id 'java'
+    id "com.github.node-gradle.node" version "2.2.0"
 }
-
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
 }
 
-test {
-    useTestNG()
-
-    // Using the G1 garbage collector changes the semantics to trigger this bug.
-    jvmArgs '-XX:+UseG1GC'
-
-    // Force test to always re-run
-    outputs.upToDateWhen { false }
+node {
+    nodeModulesDir = file( "${project.projectDir}/client" )
 }
 
-dependencies {
-    testCompile 'joda-time:joda-time:2.9.9'
-    testCompile "org.testng:testng:6.11"
+task buildVuegio( type: YarnTask, dependsOn: yarn_install ) {
+    inputs.files( fileTree( "${project.projectDir}/client/src" ) )
+    inputs.file( "${project.projectDir}/client/babel.config.js" )
+    inputs.file( "${project.projectDir}/client/tsconfig.json" )
 
-    // Latest released version. Fails sometimes, works sometimes.
-    testCompile 'de.ruedigermoeller:fst:2.57'
+    outputs.dir( "${project.projectDir}/client/dist" )
 
-    // Latest version "claimed" to be concurrency-safe, but fails in the same way. (sometimes works, sometimes fails)
-    //testCompile 'de.ruedigermoeller:fst:2.10'
-
-    // Old version, fails in the same way.
-    //testCompile 'de.ruedigermoeller:fst:2.00'
-
-    // Ancient versions, our test does not compile with these.
-    //testCompile 'de.ruedigermoeller:fst:1.63'
-    //testCompile 'de.ruedigermoeller:fst:1.27'
+    args = [ "run", "build" ]
 }
